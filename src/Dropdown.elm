@@ -6,9 +6,11 @@ import Html exposing (..)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onWithOptions)
 import Json.Decode as Json
-import Styles.Styles as Styles
+import StyleSheet exposing (Class(..))
+import Style exposing (all)
 
 
+--import Styles.Styles as Styles
 -- MODEL
 {- Context type alias
    this is dynamic stuff - may change in each update cylce
@@ -41,6 +43,10 @@ type alias Config msg =
 -- VIEW
 
 
+{ class, classList } =
+    StyleSheet.stylesheet
+
+
 view : Config msg -> Context -> List String -> Html msg
 view config context data =
     let
@@ -57,23 +63,26 @@ view config context data =
         mainAttr =
             case data of
                 [] ->
-                    [ style <| Styles.dropdownDisabled ++ Styles.dropdownInput
+                    [ class DropdownDisabled
+                    , class DropdownInput
                     ]
 
                 _ ->
-                    [ style Styles.dropdownInput
+                    [ class DropdownInput
                     , onClick config.clickedMsg
                     ]
     in
         div
-            [ style Styles.dropdownContainer ]
+            [ class DropdownContainer ]
             [ p
                 mainAttr
-                [ span [ style Styles.dropdownText ] [ text mainText ]
+                [ span [ class DropdownText ] [ text mainText ]
                 , span [] [ text "▾" ]
                 ]
             , ul
-                [ style <| displayStyle :: Styles.dropdownList ]
+                [ style <| [ displayStyle ]
+                , class DropdownList
+                ]
                 (List.map (viewItem config) data)
             ]
 
@@ -81,7 +90,7 @@ view config context data =
 viewItem : Config msg -> String -> Html msg
 viewItem config item =
     li
-        [ style Styles.dropdownListItem
+        [ class DropdownListItem
         , onClick <| config.itemPickedMsg item
         ]
         [ text item ]

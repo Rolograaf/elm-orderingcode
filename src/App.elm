@@ -5,9 +5,11 @@ import Html.Attributes exposing (src)
 import Dict exposing (Dict)
 import Mouse
 import Dropdown as Dropdown
-import Styles.Styles as Styles
+import StyleSheet exposing (Class(..))
+import Style exposing (all)
 
 
+-- import Styles.Styles as Styles
 -- main MODEL
 
 
@@ -34,7 +36,12 @@ initialModel =
 
 init : String -> ( Model, Cmd Msg )
 init path =
-    ( initialModel, Cmd.none )
+    ( { apparaat = Nothing
+      , bouwGrootte = Nothing
+      , openDropDown = AllClosed
+      }
+    , Cmd.none
+    )
 
 
 
@@ -135,6 +142,10 @@ update msg model =
             )
 
 
+{ class, classList } =
+    StyleSheet.stylesheet
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -153,9 +164,16 @@ view model =
                 |> Maybe.andThen (\c -> Dict.get c allApparaten)
                 |> Maybe.withDefault []
     in
-        div [ Html.Attributes.style Styles.mainContainer ]
-            [ Dropdown.view apparaatConfig apparaatContext apparaten
-            , Dropdown.view bouwGrootteConfig bouwGrootteContext bouwGrootten
+        div []
+            -- Html.Attributes.style Styles.mainContainer ]
+            [ Style.embed StyleSheet.stylesheet
+            , div [ class MainContainer ]
+                [ Dropdown.view
+                    apparaatConfig
+                    apparaatContext
+                    apparaten
+                , Dropdown.view bouwGrootteConfig bouwGrootteContext bouwGrootten
+                ]
             ]
 
 
