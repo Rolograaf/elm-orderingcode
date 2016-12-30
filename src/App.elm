@@ -1,12 +1,12 @@
 module App exposing (..)
 
-import Html exposing (Html, text, div, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, text, div, img, button)
 import Dict exposing (Dict)
 import Mouse
 import Dropdown as Dropdown
 import StyleSheet exposing (Class(..))
 import Style exposing (all)
+import Html.Events exposing (onClick)
 
 
 -- import Styles.Styles as Styles
@@ -95,6 +95,7 @@ type Msg
     | ApparaatPicked Apparaat
     | BouwGroottePicked BouwGrootte
     | Blur
+    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -141,6 +142,15 @@ update msg model =
             , Cmd.none
             )
 
+        Reset ->
+            ( { model
+                | apparaat = Nothing
+                , bouwGrootte = Nothing
+                , openDropDown = AllClosed
+              }
+            , Cmd.none
+            )
+
 
 { class, classList } =
     StyleSheet.stylesheet
@@ -163,10 +173,24 @@ view model =
             model.apparaat
                 |> Maybe.andThen (\c -> Dict.get c allApparaten)
                 |> Maybe.withDefault []
+
+        orderingcode =
+            case model.apparaat of
+                Just a ->
+                    case model.bouwGrootte of
+                        Just b ->
+                            "orderingcode: " ++ a ++ b ++ "..."
+
+                        Nothing ->
+                            "orderingcode: " ++ a ++ "..."
+
+                Nothing ->
+                    ""
     in
         div []
             -- Html.Attributes.style Styles.mainContainer ]
             [ Style.embed StyleSheet.stylesheet
+            , div [] [ text orderingcode ]
             , div [ class MainContainer ]
                 [ Dropdown.view
                     apparaatConfig
@@ -174,6 +198,7 @@ view model =
                     apparaten
                 , Dropdown.view bouwGrootteConfig bouwGrootteContext bouwGrootten
                 ]
+            , button [ onClick Reset ] [ text "reset" ]
             ]
 
 

@@ -7,9 +7,9 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (onWithOptions)
 import Json.Decode as Json
 import StyleSheet exposing (Class(..))
-import Style exposing (all)
 
 
+--import Style exposing (all)
 --import Styles.Styles as Styles
 -- MODEL
 {- Context type alias

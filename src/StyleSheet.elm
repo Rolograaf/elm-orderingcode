@@ -14,6 +14,7 @@ import Color.Mixing
 --------------------
 
 
+fonts : { code : Property, body : { normal : Property, large : Property } }
 fonts =
     { body =
         { normal =
@@ -52,7 +53,7 @@ colors =
         , light = Color.grey
         , lighter = Color.lightGrey
         , lightest = Color.rgb 245 245 245
-        , out = Color.rgba 0 0 0 0.54
+        , out = Color.rgba 0 0 0 0.4
         }
     , blue =
         { dark = Color.Mixing.darken 0.1 (Color.rgb 12 148 200)
@@ -81,13 +82,16 @@ stylesheet : StyleSheet Class msg
 stylesheet =
     Style.render
         [ class MainContainer
-            [ height (percent 100)
+            [ height auto
+              --(percent 100)
             , padding (all 16)
+              -- , spacing (all 16)
             , backgroundColor colors.grey.lightest
             ]
         , class DropdownContainer
             [ width (px 216)
-            , padding (all 16)
+              -- , padding (all 16)
+            , spacing (all 16)
             , inline
             , fonts.body.large
             ]
@@ -104,7 +108,7 @@ stylesheet =
             ]
         , class DropdownDisabled
             [ textColor colors.grey.out
-            , cursor "pointer"
+            , cursor "not-allowed"
             ]
         , class DropdownText
             [ flowLeft
@@ -116,6 +120,7 @@ stylesheet =
         , class DropdownList
             [ topLeft 0 0
             , cursor "pointer"
+            , padding ( 4.0, 8.0, 0, 0 )
             , shadows
                 [ shadow
                     { offset = ( 0, 2 )
@@ -132,7 +137,7 @@ stylesheet =
                 , vertical = alignTop
                 }
             , hover
-                [ textColor colors.red.normal
+                [ backgroundColor colors.grey.light
                 , cursor "pointer"
                 ]
             ]
