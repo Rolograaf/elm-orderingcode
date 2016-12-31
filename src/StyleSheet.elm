@@ -1,14 +1,11 @@
 module StyleSheet exposing (..)
 
 import Style exposing (..)
-
-
--- import Style.Media
-
 import Color exposing (Color)
 import Color.Mixing
 
 
+-- import Style.Media
 --------------------
 -- Define Palettes
 --------------------
@@ -68,6 +65,59 @@ colors =
     }
 
 
+palette : { button : Property, nav : Property, standard : Property, field : Property }
+palette =
+    { standard =
+        Style.mix
+            [ backgroundColor
+                colors.transparent
+            , textColor
+                colors.black
+            , borderColor
+                colors.grey.light
+            ]
+    , button =
+        Style.mix
+            [ backgroundColor
+                colors.white
+            , textColor
+                colors.blue.dark
+            , border
+                { width = (all 1)
+                , style = solid
+                , color = colors.blue.light
+                }
+            ]
+    , nav =
+        Style.mix
+            [ borderColor
+                colors.grey.lighter
+            , backgroundColor
+                colors.grey.lightest
+            , textColor
+                colors.grey.darker
+            ]
+    , field =
+        Style.mix
+            [ flowLeft
+                { wrap = False
+                , horizontal = alignCenter
+                , vertical = alignTop
+                }
+              --  , userselect none
+            ]
+    }
+
+
+
+--
+-- myMixin : Style.Model -> Style.Model
+-- myMixin style =
+--     { style
+--         | userselect = none
+--     }
+
+
 type Class
     = MainContainer
     | DropdownContainer
@@ -82,45 +132,33 @@ stylesheet : StyleSheet Class msg
 stylesheet =
     Style.render
         [ class MainContainer
-            [ height auto
-              --(percent 100)
-            , padding (all 16)
-              -- , spacing (all 16)
-            , backgroundColor colors.grey.lightest
+            [ height (percent 100)
+            , spacing (all 16)
+            , palette.nav
             ]
         , class DropdownContainer
-            [ width (px 216)
-              -- , padding (all 16)
+            [ width (px 226)
             , spacing (all 16)
             , inline
             , fonts.body.large
             ]
         , class DropdownInput
-            [ borderWidth (all 0.17)
-            , borderRadius (all 4)
-            , backgroundColor colors.white
+            [ palette.button
             , cursor "pointer"
-            , flowLeft
-                { wrap = True
-                , horizontal = alignCenter
-                , vertical = alignTop
-                }
+            , palette.field
             ]
         , class DropdownDisabled
             [ textColor colors.grey.out
             , cursor "not-allowed"
+            , palette.field
             ]
         , class DropdownText
-            [ flowLeft
-                { wrap = True
-                , horizontal = alignCenter
-                , vertical = alignTop
-                }
+            [ palette.field
             ]
         , class DropdownList
             [ topLeft 0 0
             , cursor "pointer"
-            , padding ( 4.0, 8.0, 0, 0 )
+            , padding ( 4.0, 0, 0, 0 )
             , shadows
                 [ shadow
                     { offset = ( 0, 2 )
@@ -131,11 +169,7 @@ stylesheet =
                 ]
             ]
         , class DropdownListItem
-            [ flowLeft
-                { wrap = True
-                , horizontal = alignCenter
-                , vertical = alignTop
-                }
+            [ palette.field
             , hover
                 [ backgroundColor colors.grey.light
                 , cursor "pointer"

@@ -100,6 +100,11 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    ( pureUpdate msg model, Cmd.none )
+
+
+pureUpdate : Msg -> Model -> Model
+pureUpdate msg model =
     case msg of
         Toggle dropdown ->
             let
@@ -109,7 +114,7 @@ update msg model =
                     else
                         dropdown
             in
-                ( { model | openDropDown = newOpenDropDown }, Cmd.none )
+                { model | openDropDown = newOpenDropDown }
 
         ApparaatPicked pickedApparaat ->
             let
@@ -119,37 +124,29 @@ update msg model =
                     else
                         model.bouwGrootte
             in
-                ( { model
+                { model
                     | apparaat = Just pickedApparaat
                     , bouwGrootte = newBouwGrootte
                     , openDropDown = AllClosed
-                  }
-                , Cmd.none
-                )
+                }
 
         BouwGroottePicked pickedBouwGrootte ->
-            ( { model
+            { model
                 | bouwGrootte = Just pickedBouwGrootte
                 , openDropDown = AllClosed
-              }
-            , Cmd.none
-            )
+            }
 
         Blur ->
-            ( { model
+            { model
                 | openDropDown = AllClosed
-              }
-            , Cmd.none
-            )
+            }
 
         Reset ->
-            ( { model
+            { model
                 | apparaat = Nothing
                 , bouwGrootte = Nothing
                 , openDropDown = AllClosed
-              }
-            , Cmd.none
-            )
+            }
 
 
 { class, classList } =
@@ -185,7 +182,7 @@ view model =
                             "orderingcode: " ++ a ++ "..."
 
                 Nothing ->
-                    ""
+                    "orderingcode: ..."
     in
         div []
             -- Html.Attributes.style Styles.mainContainer ]
