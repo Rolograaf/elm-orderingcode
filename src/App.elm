@@ -9,7 +9,6 @@ import Style exposing (all)
 import Html.Events exposing (onClick)
 
 
--- import Styles.Styles as Styles
 -- main MODEL
 
 
@@ -98,59 +97,94 @@ type Msg
     | Reset
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+
+-- UPDATE helpers so we can read update itself more easily
+
+
+noCmd : Model -> ( Model, Cmd msg )
+noCmd model =
+    ( model, Cmd.none )
+
+
+setBouwGroottePicked : BouwGrootte -> Model -> Model
+setBouwGroottePicked pickedBouwGrootte model =
+    { model
+        | bouwGrootte = Just pickedBouwGrootte
+        , openDropDown = AllClosed
+    }
+
+
+setToggleDropdown : OpenDropDown -> Model -> Model
+setToggleDropdown dropdown model =
+    let
+        newOpenDropDown =
+            if model.openDropDown == dropdown then
+                AllClosed
+            else
+                dropdown
+    in
+        { model | openDropDown = newOpenDropDown }
+
+
+setApparaatPicked : Apparaat -> Model -> Model
+setApparaatPicked pickedApparaat model =
+    let
+        newBouwGrootte =
+            if model.apparaat /= Just pickedApparaat then
+                Nothing
+            else
+                model.bouwGrootte
+    in
+        { model
+            | apparaat = Just pickedApparaat
+            , bouwGrootte = newBouwGrootte
+            , openDropDown = AllClosed
+        }
+
+
+setBlur : Model -> Model
+setBlur model =
+    { model
+        | openDropDown = AllClosed
+    }
+
+
+setReset : Model -> Model
+setReset model =
+    { model
+        | apparaat = Nothing
+        , bouwGrootte = Nothing
+        , openDropDown = AllClosed
+    }
+
+
+update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
-    ( pureUpdate msg model, Cmd.none )
-
-
-pureUpdate : Msg -> Model -> Model
-pureUpdate msg model =
     case msg of
         Toggle dropdown ->
-            let
-                newOpenDropDown =
-                    if model.openDropDown == dropdown then
-                        AllClosed
-                    else
-                        dropdown
-            in
-                { model | openDropDown = newOpenDropDown }
+            model |> setToggleDropdown dropdown |> noCmd
 
         ApparaatPicked pickedApparaat ->
-            let
-                newBouwGrootte =
-                    if model.apparaat /= Just pickedApparaat then
-                        Nothing
-                    else
-                        model.bouwGrootte
-            in
-                { model
-                    | apparaat = Just pickedApparaat
-                    , bouwGrootte = newBouwGrootte
-                    , openDropDown = AllClosed
-                }
+            model |> setApparaatPicked pickedApparaat |> noCmd
 
         BouwGroottePicked pickedBouwGrootte ->
-            { model
-                | bouwGrootte = Just pickedBouwGrootte
-                , openDropDown = AllClosed
-            }
+            model
+                |> setBouwGroottePicked pickedBouwGrootte
+                |> noCmd
 
         Blur ->
-            { model
-                | openDropDown = AllClosed
-            }
+            model |> setBlur |> noCmd
 
         Reset ->
-            { model
-                | apparaat = Nothing
-                , bouwGrootte = Nothing
-                , openDropDown = AllClosed
-            }
+            model |> setReset |> noCmd
 
 
 { class, classList } =
     StyleSheet.stylesheet
+
+
+
+-- VIEW
 
 
 view : Model -> Html Msg

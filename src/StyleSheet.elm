@@ -153,7 +153,7 @@ stylesheet =
             , palette.field
             ]
         , class DropdownText
-            [ palette.field
+            [--palette.field
             ]
         , class DropdownList
             [ topLeft 0 0
@@ -169,8 +169,8 @@ stylesheet =
                 ]
             ]
         , class DropdownListItem
-            [ palette.field
-            , hover
+            [ --palette.field,
+              hover
                 [ backgroundColor colors.grey.light
                 , cursor "pointer"
                 ]
